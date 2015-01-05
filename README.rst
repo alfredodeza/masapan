@@ -79,4 +79,23 @@ to read/understand the rules for the cases::
         }
     )
 
+reports
+-------
+When a report runs, it specifies percentages for coverage (as usual) but can
+also list all missing test cases, with classes and test methods defined::
+
+    Name                    Cases   Miss    Cover
+    ---------------------------------------------
+    operations/bucket.py        3      0     100%
+    operations/objects.py       6      1      84%
+    ---------------------------------------------
+    TOTAL                       9      1      89%
+
+    Missing test cases
+    ==================
+
+    operations/objects.py
+    ---------------------
+    TestErrors :: test_Invalidignature
+
 
