@@ -79,6 +79,7 @@ to read/understand the rules for the cases::
         }
     )
 
+
 reports
 -------
 When a report runs, it specifies percentages for coverage (as usual) but can

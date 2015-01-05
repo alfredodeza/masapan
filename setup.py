@@ -20,7 +20,9 @@ setup(
     license          = "MIT",
     zip_safe         = False,
     keywords         = "test, coverage, framework",
+    scripts = ['bin/masapan'],
     long_description = LONG_DESCRIPTION,
+    install_requires = ['tambo'],
     classifiers      = [
                         'Development Status :: 4 - Beta',
                         'Intended Audience :: Developers',
