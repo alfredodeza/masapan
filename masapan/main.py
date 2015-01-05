@@ -13,6 +13,10 @@ be thoroughly tested.
 
 Version: %s
 
+Global options:
+
+--config            Define the config module (path to Python file)
+
 Subcommands:
 run                 Starts a new run, measuring coverage against passed in rules.
 
@@ -31,10 +35,14 @@ run                 Starts a new run, measuring coverage against passed in rules
 
     @catches(KeyboardInterrupt)
     def main(self, argv):
+        options = [['--config', '--conf']]
         parser = Transport(argv, mapper=self.mapper,
+                           options=options,
                            check_help=False,
                            check_version=False)
         parser.parse_args()
+        if parser.get('--config'):
+            self.load_config_module(parser['--config'])
         parser.catch_help = self.help()
         parser.catch_version = masapan.__version__
         parser.mapper = self.mapper
@@ -43,3 +51,19 @@ run                 Starts a new run, measuring coverage against passed in rules
         parser.dispatch()
         parser.catches_help()
         parser.catches_version()
+
+    def load_config_module(self, path):
+        # be aware of same file path for relative imports
+        import os
+        old_path0   = sys.path[0]
+        module_name = os.path.dirname(os.path.abspath(path))
+        if module_name not in sys.path:
+            sys.path[0] = module_name
+
+        _file = open(path)
+        compiled = compile(_file.read(), path, "exec")
+        globals_ = {}
+        exec(compiled, globals_)
+
+        # restore the original sys.path
+        sys.path[0] = old_path0
