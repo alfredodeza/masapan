@@ -1,6 +1,7 @@
 import sys
 import os
 import re
+from masapan import registration
 
 
 def globals_from_file(filename):
@@ -83,25 +84,27 @@ class Runner(object):
 
 
     def run(self):
+        registry_paths = registration.registry.keys()
         for f in self.paths:
-            #classes = get_classes(f, self.class_name)
-            try:
-                classes = get_classes(f, self.class_name)
-            except Exception, e:
-                self.total_errors += 1
-                self.errors.append(
-                    dict(
-                        failure   = sys.exc_info(),
-                        exc_name  = e.__class__.__name__
-                       )
-                    )
-                continue
-            test_module = self.report[f]
-            for case in classes:
-                test_module.setdefault(case.__name__, [])
+            path_is_valid = any([f.startswith(p) for p in registry_paths])
+            if path_is_valid:
+                try:
+                    classes = get_classes(f, self.class_name)
+                except Exception, e:
+                    self.total_errors += 1
+                    self.errors.append(
+                        dict(
+                            failure=sys.exc_info(),
+                            exc_name=e.__class__.__name__
+                            )
+                        )
+                    continue
+                test_module = self.report[f]
+                for case in classes:
+                    test_module.setdefault(case.__name__, [])
 
-                methods = get_methods(case, self.method_name)
-                test_module[case.__name__] =  methods or []
+                    methods = get_methods(case, self.method_name)
+                    test_module[case.__name__] =  methods or []
 
 #
 # Runner helpers
