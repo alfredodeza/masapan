@@ -12,6 +12,7 @@ def globals_from_file(filename):
     _file = open(filename)
     compiled = compile(_file.read(), filename, "exec")
     globals_ = {}
+    globals_['__file__'] = filename
     exec(compiled, globals_)
 
     # restore the original sys.path
@@ -134,7 +135,7 @@ def get_methods(suite, method_name):
 
 def _collect_classes(path):
     global_modules = map(globals_from_file, [path])
-    return [i for i in global_modules[0].values() if callable(i) and i.__name__.startswith('Test')]
+    return [i for i in global_modules[0].values() if callable(i) and getattr(i, '__name__', '').startswith('Test')]
 
 
 
