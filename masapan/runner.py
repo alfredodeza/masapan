@@ -3,25 +3,6 @@ from core import Runner, FileCollector
 import os
 
 
-# reporting templates
-report_header = """
-Name                                                                Cases    Miss    Cover
-------------------------------------------------------------------------------------------
-"""
-
-report_data = """
-%s                                                                     %s      %s      %s%
-"""
-
-report_footer = """
-------------------------------------------------------------------------------------------
-TOTAL                                                                  %s      %s      %s%
-"""
-# XXX
-report_errors = """
-%s
-"""
-
 class Run(object):
 
     def __init__(self, argv=None):
