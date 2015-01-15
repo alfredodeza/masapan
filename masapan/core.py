@@ -1,16 +1,31 @@
 import sys
 import os
 import re
+import imp
 from masapan import registration
 
 
 def globals_from_file(filename):
     # be aware of same file path for relative imports
-    old_path0   = sys.path[0]
+    old_path0 = sys.path[0]
     sys.path[0] = os.path.dirname(filename)
 
     _file = open(filename)
     compiled = compile(_file.read(), filename, "exec")
+
+    # Next, attempt to actually import the file as a module.
+    # This provides more verbose import-related error reporting than exec()
+    absname, _ = os.path.splitext(filename)
+    basepath, module_name = absname.rsplit(os.sep, 1)
+    # At some point, when/if we get to need py3 compatibility
+    #if python3:
+        #SourceFileLoader(module_name, abspath).load_module(module_name)
+    #else:
+    imp.load_module(
+        module_name,
+        *imp.find_module(module_name, [basepath])
+    )
+
     globals_ = {}
     globals_['__file__'] = filename
     exec(compiled, globals_)
@@ -21,7 +36,6 @@ def globals_from_file(filename):
 
 
 class FileCollector(list):
-
 
     def __init__(self, path, config={}):
         self.user_match       = config.get('collect-match')
